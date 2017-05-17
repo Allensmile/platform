@@ -25,7 +25,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
@@ -45,6 +47,7 @@ import de.usu.research.hobbit.gui.rabbitmq.StorageServiceClientSingleton;
 import de.usu.research.hobbit.gui.rest.beans.ExperimentBean;
 import de.usu.research.hobbit.gui.rest.beans.ExperimentCountBean;
 import de.usu.research.hobbit.gui.rest.beans.NamedEntityBean;
+import de.usu.research.hobbit.gui.rest.beans.UserInfoBean;
 
 @Path("experiments")
 public class ExperimentsResources {
@@ -55,7 +58,8 @@ public class ExperimentsResources {
     @Path("query")
     @Produces(MediaType.APPLICATION_JSON)
     public List<ExperimentBean> query(@QueryParam("id") String idsCommaSep,
-            @QueryParam("challenge-task-id") String challengeTaskId) throws Exception {
+            @QueryParam("challenge-task-id") String challengeTaskId, @Context SecurityContext sc) throws Exception {
+    	UserInfoBean userInfo = InternalResources.getUserInfoBean(sc);
         List<ExperimentBean> results = null;
         String[] ids = null;
         if (idsCommaSep != null) {
